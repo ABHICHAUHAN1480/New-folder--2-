@@ -7,10 +7,9 @@ function App() {
 
   return (
     <>
-      <div className='bg-black'>
+      <div className=''>
       <Navbar/>
-       
-        Click on the Vite and React logos to learn more
+      
     </div>
     </>
   )
