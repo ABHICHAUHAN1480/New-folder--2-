@@ -1,7 +1,6 @@
 import { SignedIn, SignedOut, SignInButton, SignOutButton, UserButton, UserProfile } from '@clerk/clerk-react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
-import { IoSettingsOutline } from "react-icons/io5";
 import { IoMdMenu } from "react-icons/io";
 import { useState } from 'react';
 
@@ -13,7 +12,7 @@ const Navbar = () => {
   const [userprofile, setuserprofile] = useState(false)
     const navigateToHome = () => {
         navigate("/");
-        setMenuOpen(false); // Close menu after navigation
+        setMenuOpen(false);
     };
 
     const toggleMenu = () => {
@@ -22,22 +21,19 @@ const Navbar = () => {
 
     return (<>
      {userprofile ? 
-    <div className='flex flex-col items-center'>
+    <div className='flex flex-col mt-4 items-center'>
     <UserProfile />
     <button 
       onClick={() => { setuserprofile(prev => !prev); }} 
-      className='mt-4 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600'
+      className='mt-4 px-4 py-2 mb-4 bg-gray-700 text-white rounded hover:bg-gray-600'
     >
       Close
     </button>
   </div>
-     
-     
-     
      : <nav className="bg-gray-800 p-4">
            
            <div className="container mx-auto flex justify-between items-center relative">
-               <div className="text-white text-lg font-bold">CourseSeeker</div>
+               <div className="text-white text-4xl font-bold">CourseSeeker</div>
 
 
                <div className="flex items-center space-x-4">
@@ -90,8 +86,8 @@ const Navbar = () => {
                        <div className='text-white text-lg font-bold px-3 py-2 rounded cursor-pointer hover:bg-gray-700' onClick={navigateToHome}>
                            Home
                        </div>
-                       <div className="hidden md:block text-white  rounded-full cursor-pointer hover:bg-gray-700 transition duration-300 ease-in-out" >
-                           {/* <IoSettingsOutline className="text-2xl" /> */}
+                       <div className="hidden md:block text-white  rounded-full cursor-pointer  transition duration-300 ease-in-out" >
+                         
                            <lord-icon
                                src="https://cdn.lordicon.com/ifsxxxte.json"
                                trigger="loop"
