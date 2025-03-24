@@ -30,7 +30,7 @@ const Navbar = () => {
       Close
     </button>
   </div>
-     : <nav className="bg-gray-800 p-4">
+     : <nav className="bg-gray-900 p-4">
            
            <div className="container mx-auto flex justify-between items-center relative">
                <div className="text-white text-4xl font-bold">CourseSeeker</div>
