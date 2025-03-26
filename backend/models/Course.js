@@ -17,6 +17,10 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    privacy: {
+        type: String,
+        required: true
+    },
     impPoints: {
         type: [String], 
         required: true
@@ -35,14 +39,21 @@ const courseSchema = new mongoose.Schema({
                 type: [Number], 
                 required: true
             },
-            subtopics: {
-                type: [String], 
-                required: true
-            }
+            subtopics:[ {
+            
+                 subname: {
+                    type: String,
+                    required: true
+                },
+                sublink: {
+                    type: String,
+                    required: true
+                }
+            }]
         }
     ],
-    // Keywords:{
-    //     type: [String], required: true}
+    Keywords:{type: [String], required: true},
+        
     
 });
 

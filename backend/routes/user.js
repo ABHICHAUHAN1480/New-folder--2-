@@ -33,18 +33,17 @@ router.post('/addUser', async (req, res) => {
 );
 
 router.get('/getCourses', async (req, res) => {
-    
-        const { query, page = 1, limit = 10 } = req.body;
-    
-        if (!query) return res.json({ results: [] });
-    
+        const { search,page=1,limit=10} = req.query;
+        if (!search) return res.json({ results: [] });
         try {
             const results = await Course.find(
-                { $text: { $search: query } } 
+                { $text: { $search: search } ,
+                  privacy: "public"
+            } 
             )
             .skip((page - 1) * limit) 
             .limit(Number(limit)); 
-    
+            
             res.json({ results });
         } catch (error) {
             res.status(500).json({ error: error.message });
