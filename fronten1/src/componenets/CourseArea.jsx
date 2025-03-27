@@ -67,7 +67,9 @@ const CourseArea = (course) => {
                         trigger="hover"
                         colors="primary:#d4d1fa,secondary:#e4e4e4,tertiary:#000,quaternary:#ee8f66"
                         style={{ width: 45, height: 45 }}>
-                    </lord-icon></span> </div>
+                    </lord-icon>
+                    </span> 
+                    </div>
 
                 <div className='mt-4'>
                     {course.course.courseDescription}
