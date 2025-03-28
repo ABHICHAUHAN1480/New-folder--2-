@@ -5,8 +5,17 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     firstName: { type: String },
     lastName: { type: String },
-    owncourses: { type: [String] },
-    enrolledcourses: { type: [String] },
+    owncourses: [{
+        courseCode: { type: String },
+        courseCompletion: {  
+            type: [[Number]],  
+            default: [[0] ]  
+        }
+    }], 
+    enrolledcourses:  [{
+        courseCode: { type: String },
+        courseCompletion: { type: [[Number]], default: [[]] } 
+    }], 
 });
 
 module.exports = mongoose.model("User", userSchema);

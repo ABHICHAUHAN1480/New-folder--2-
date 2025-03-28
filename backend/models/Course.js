@@ -7,7 +7,8 @@ const courseSchema = new mongoose.Schema({
     },
     courseCode: {
         type: String,
-        required: true
+        required: true,
+        Unique: true
     },
     courseInstructor: {
         type: String,
@@ -31,19 +32,19 @@ const courseSchema = new mongoose.Schema({
                 type: String,
                 required: true
             },
-            completions: {
-                type: [Number], 
-                required: true
-            },
             subtopics:[ {
             
-                 subname: {
+                subname: {
                     type: String,
                     required: true
                 },
                 sublink: {
                     type: String,
                     required: true
+                },
+                articleLink:{
+                    type: String,
+                    
                 }
             }]
         }

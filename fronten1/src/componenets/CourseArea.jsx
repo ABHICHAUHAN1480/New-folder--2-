@@ -16,8 +16,8 @@ const CourseArea = (course) => {
 
     const topics = course.course.topics;
     const counttopics = (topics) => {
-        const totalSubtopics = topics.reduce((acc, topic) => acc + topic.subtopics.length, 0);
-        const completedSubtopics = topics.reduce((acc, topic) => acc + topic.completions.filter(c => c === 1).length, 0);
+        const totalSubtopics = course.course.courseCompletion.reduce((acc, topic) => acc + topic.length, 0);
+        const completedSubtopics = course.course.courseCompletion.reduce((acc, topic) => acc + topic.filter(c => c === 1).length, 0);
         setComSubtopic(completedSubtopics);
         setCount(totalSubtopics);
     }
@@ -103,10 +103,10 @@ const CourseArea = (course) => {
                 <div className=' border-gray-300 mt-4 pt-4'>
                     {topics.map((topic, index) => (
                         <div key={index}>
-                            <div onClick={() => toggleTopic(topic.id)} className='cursor-pointer border-t-2 bg-opacity-25 bg-white rounded-lg mt-2 flex justify-between p-4'>
+                            <div onClick={() => toggleTopic(topic._id)} className='cursor-pointer border-t-2 bg-opacity-25 bg-white rounded-lg mt-2 flex justify-between p-4'>
                                 <span className=''>Step {index + 1} : {topic.topic}</span>
                                <span className='flex items-center gap-2'>  
-                                <span className='py-1 px-2 bg-gray-600 rounded-lg'> {topic.completions.filter((c) => c === 1).length}/{topic.subtopics.length}</span>
+                                <span className='py-1 px-2 bg-gray-600 rounded-lg'> {course.course.courseCompletion[index].filter((c) => c === 1).length}/{topic.subtopics.length}</span>
                                 <lord-icon
                                     src="https://cdn.lordicon.com/wjlyhulz.json"
                                     trigger="click"
@@ -115,7 +115,7 @@ const CourseArea = (course) => {
                                 ></lord-icon></span> 
 
                             </div>
-                            {openTopicId === topic.id && (
+                            {openTopicId === topic._id && (
                                 <ul className="ml-4 mt-2 bg-opacity-25  bg-gray-100 p-2 rounded">
                                     <li  className="text-gray-400 flex justify-between items-center  p-2 border-t-2 mb-1 text-xl font-bold  rounded-md border-gray-300">
                                         <span className='w-1/6 overflow-hidden' >Topic</span>
@@ -169,8 +169,7 @@ const CourseArea = (course) => {
                                                         colors="primary:#121331,secondary:#545454"
                                                         style={{ width: 25, height: 25 }}>
                                                     </lord-icon> : ""}
-
-
+                                                    
                                             </span>
 
                                         </li>
