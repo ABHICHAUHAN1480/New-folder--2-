@@ -16,10 +16,9 @@ app.use(clerkMiddleware());
 app.get('/', (req, res) => {
     res.send('Hello World');
   });
-  
 app.use("/temp", require('./routes/temprout'));
 app.use("/User", require('./routes/user'));
-
+app.use("/course", require('./routes/course'));
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

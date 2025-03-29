@@ -1,8 +1,7 @@
 import { SignedIn, SignedOut } from '@clerk/clerk-react';
-import { set } from 'mongoose';
 import React, { useEffect, useState } from 'react'
 
-const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2 }) => {
+const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2, course3, setSubscribed}) => {
     const [myCourse, setMyCourse] = useState(false);
     const [subCourse, setSubCourse] = useState(false);
 
@@ -37,6 +36,7 @@ const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2 }) => {
                                             settell(true);
                                             settell2(false);
                                             setIndex(index);
+                                            setSubscribed(false);
                                             setopenaddcourse(false);
                                         }}
                                         className="p-3 w-11/12 mx-auto hover:scale-105 border-2 border-gray-300 cursor-pointer hover:bg-orange-100 rounded-lg transition duration-150 ease-in-out"
@@ -46,7 +46,7 @@ const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2 }) => {
                                 ))}
                                 <li
                                  onClick={()=>{setopenaddcourse(true),settell(false),settell2(false)}}
-                                className=" bg-green-500 flex items-center justify-between w-11/12 mx-auto hover:scale-105 border-2 border-gray-300 cursor-pointer hover:bg-green-600 rounded-lg transition duration-150 ease-in-out">
+                                 className=" bg-green-500 flex items-center justify-between w-11/12 mx-auto hover:scale-105 border-2 border-gray-300 cursor-pointer hover:bg-green-600 rounded-lg transition duration-150 ease-in-out">
                                     <span className='p-3'>Add new Course</span>
                                     <span className='mr-3 mt-1'><lord-icon
                                         src="https://cdn.lordicon.com/xojmodgf.json"
@@ -76,12 +76,20 @@ const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2 }) => {
                         </div>
                         {subCourse && (
                             <ul className="w-full mt-3 flex flex-col py-4 gap-3 bg-gray-50 rounded-lg">
-                                {['Subcourse 1', 'Subcourse 2', 'Subcourse 3', 'Subcourse 4', 'Subcourse 5'].map((subcourse, index) => (
+                               {course3.map((course, index) => (
                                     <li
                                         key={index}
+
+                                        onClick={() => {
+                                            settell(true);
+                                            settell2(false);
+                                            setIndex(index);
+                                            setSubscribed(true);
+                                            setopenaddcourse(false);
+                                        }}
                                         className="p-3 w-11/12 mx-auto hover:scale-105 border-2 border-gray-300 cursor-pointer hover:bg-orange-100 rounded-lg transition duration-150 ease-in-out"
                                     >
-                                        {subcourse}
+                                        {course.courseName}
                                     </li>
                                 ))}
                             </ul>

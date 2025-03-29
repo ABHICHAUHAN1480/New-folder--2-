@@ -3,11 +3,13 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { IoMdMenu } from "react-icons/io";
 import { useState } from 'react';
+import { useAuth } from '@clerk/clerk-react';
 
 
 
 
 const Navbar = ({ setCourse, settell, settell2 }) => {
+    const { getToken } = useAuth();
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [userprofile, setuserprofile] = useState(false)
@@ -27,7 +29,7 @@ const Navbar = ({ setCourse, settell, settell2 }) => {
             if (!res.ok) {
                 throw new Error(data.message || "Failed to get course");
             }
-            // console.log(data);
+          
             setResult(data.results);
 
         }
@@ -53,12 +55,39 @@ const Navbar = ({ setCourse, settell, settell2 }) => {
         setQuery(e.target.value);
 
     };
-    const openSearch = (index) => () => {
-        setCourse(result[index]);
+    const openSearch = async(index)=> {
+          
+        const token = await getToken();
+         
+        const res =await fetch(`${import.meta.env.VITE_BACKEND_URL}/course/completion?courseCode=${result[index].courseCode}`, {
+            method: "Get",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.message || "Failed to get course");
+        } 
+        if(data.msg==="found"){
+            const courseCompletion = data.courseCompletion;
+            const course = {
+                ...result[index], 
+                courseCompletion
+            };
+            setCourse(course); 
+        }else{
+            const courseCompletion =result[index].topics.map(topic => new Array(topic.subtopics.length).fill(0)); const course = {
+                ...result[index], 
+                courseCompletion
+            };
+            setCourse(course); 
+        }  
         settell(true);
         settell2(true);
         setQuery("");
-    }
+    }; 
 
 
     return (<>
@@ -101,7 +130,7 @@ const Navbar = ({ setCourse, settell, settell2 }) => {
                                     result.map((course, index) => (
                                         <div
                                             key={index}
-                                            onClick={openSearch(index)}
+                                            onClick={()=>openSearch(index)}
                                             className="p-2 hover:bg-gray-700 cursor-pointer rounded-md"
                                         >
                                             {course.courseName}

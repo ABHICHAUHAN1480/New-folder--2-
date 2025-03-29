@@ -28,17 +28,17 @@ const courseSchema = new mongoose.Schema({
     },
     topics: [
         {
-            topic: {
+            topicName: {
                 type: String,
                 required: true
             },
             subtopics:[ {
             
-                subname: {
+                videoLink: {
                     type: String,
                     required: true
                 },
-                sublink: {
+                subtopicName: {
                     type: String,
                     required: true
                 },

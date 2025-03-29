@@ -5,16 +5,15 @@ const { clerkClient } = require('@clerk/express');
 const User = require("../models/User");
 router.post('/addCourse', async (req, res) => {
     const userId = req.auth.userId;
-    // console.log(userId);
+    
     
     if (!userId) {
         return res.status(400).json({ error: 'Error: No signed-in user' });
     }
-    const User = await clerkClient.users.getUser(userId);
-
+    const user = await User.findOne({ clerkId: userId });
     const {courseName, courseDescription, privacy,courseInstructor,courseCode,keywords,importantPoints,topics } = req.body;
+    const courseCompletion = topics.map(topic => new Array(topic.subtopics.length).fill(0));
 
-    //  console.log(req.body);
     const course = new Course({
         courseName: courseName,
         courseDescription: courseDescription,
@@ -25,13 +24,18 @@ router.post('/addCourse', async (req, res) => {
         impPoints: importantPoints,
         topics: topics
     });
+  console.log(courseCompletion)
     course.save();
+    user.owncourses.push({
+        courseCode,
+        courseCompletion
+    });
+
+    await user.save();
 
     res.json({ message: 'Course added' });
     
 });
-
-
 
 
 router.get('/getCourses', async (req, res) => {

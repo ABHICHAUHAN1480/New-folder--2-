@@ -25,19 +25,25 @@ const AddCourse = () => {
     const increasePoints = (val) => {
         if (val === 1) {
             if (pointsLen < 10) {
-                setpointsLen(pointsLen + 1)
+                setImportantPoints([...importantPoints, ""]); 
+                setpointsLen(pointsLen + 1);
             } else {
-                alert('You can add maximum 10 points')
+                alert("You can add a maximum of 10 points");
             }
         } else {
             if (pointsLen > 1) {
-                window.confirm(`Are you sure you want to delete  point ${pointsLen}?`)
-                setpointsLen(pointsLen - 1)
+          
+                const confirmDelete = window.confirm(`Are you sure you want to delete point ${pointsLen}?`);
+                if (confirmDelete) {
+                    setImportantPoints(importantPoints.slice(0, -1)); 
+                    setpointsLen(pointsLen - 1);
+                }
             } else {
-                alert('You have to  add minimum 1 points')
+                alert("You must have at least 1 point");
             }
         }
-    }
+    };
+    
     const increaseSubtopic = (topicIndex, val) => {
         setTopics(prevTopics => {
             return prevTopics.map((topic, index) => {
@@ -103,9 +109,9 @@ const AddCourse = () => {
     };
 
 
-    const handlesubmit = async() => {
+    const handlesubmit = async () => {
         const token = await getToken();
-
+    
         if (courseName === '') {
             toast.error('Course Name is required');
             return;
@@ -127,7 +133,6 @@ const AddCourse = () => {
         } else if (topics.some(topic => topic.topicName === '')) {
             toast.error('All Topic Names are required');
             return;
-
         } else if (topics.some(topic => topic.subtopics.some(subtopic => subtopic.subtopicName === ''))) {
             toast.error('All Subtopic Names are required');
             return;
@@ -135,7 +140,7 @@ const AddCourse = () => {
             toast.error('All Subtopic Video Links are required');
             return;
         }
- 
+    
         if (!topics.some(topic =>
             topic.subtopics.some(subtopic =>
                 subtopic.videoLink.includes('youtube.com') || subtopic.videoLink.includes('youtu.be')
@@ -144,51 +149,53 @@ const AddCourse = () => {
             toast.error('All Subtopic Video Links should be from YouTube');
             return;
         }
-        
-        const res=fetch(`${import.meta.env.VITE_BACKEND_URL}/temp/addCourse`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                courseName,
-                courseInstructor,
-                courseDescription,
-                courseCode,
-                keywords: keywords.split(',').map(keyword => keyword.trim()),
-                importantPoints,
-                topics,
-                privacy: isPublic ? 'Public' : 'Private'
-            })
-        });
-        if (!res.ok) {
-            toast.error('Failed to add course');
-            return;
-        }else{
-            toast.success('Course Added')
-        }
-        
+    
+        try {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/temp/addCourse`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    courseName,
+                    courseInstructor,
+                    courseDescription,
+                    courseCode,
+                    keywords: keywords.split(',').map(keyword => keyword.trim()),
+                    importantPoints,
+                    topics,
+                    privacy: isPublic ? 'Public' : 'Private'
+                })
+            });
+    
+            if (!res.ok) {
+                toast.error('Failed to add course');
+                return;
+            }
+    
+            toast.success('Course Added Successfully');
+            setCourseName('');
+            setCourseInstructor('');
+            setCourseDescription('');
+            setCourseCode('');
+            setKeywords('');
+            setImportantPoints(() => Array(pointsLen).fill(""));
+            setTopics([
+                {
+                    topicName: "",
+                    subtopics: [{ subtopicName: "", videoLink: "", articleLink: "" }]
+                }
+            ]);
+            setpointsLen(2);
+            settopicLen(1);
+            setIsPublic(true);
             
-        // setCourseName('');
-        // setCourseInstructor('');
-        // setCourseDescription('');
-        // setCourseCode('');
-        // setKeywords('');
-        // setImportantPoints(() => Array(pointsLen).fill(""));
-        // setTopics([
-        //     {
-        //         topicName: "",
-        //         subtopics: [{ subtopicName: "", videoLink: "", articleLink: "" }]
-        //     }
-        // ]);
-        // setpointsLen(2);
-        // settopicLen(1);
-        // setIsPublic(true);
-        toast.success('Course Added Successfully');
-
-    }
-
+        } catch (error) {
+            console.error("Error adding course:", error);
+            toast.error('Something went wrong');
+        }
+    };
     const handleChangeTopic = (index, value) => {
         setTopics((prevTopics) =>
             prevTopics.map((topic, i) =>
@@ -211,11 +218,7 @@ const AddCourse = () => {
             )
         );
     };
-
-
-
-
-
+   
     return (
         <><div><Toaster /></div>
             <div className='w-3/4 p-4 text-white pb-10 cursor-default bg-gray-950 absolute right-0 h-[90vh] hide-scrollbar overflow-y-auto'>
@@ -234,7 +237,6 @@ const AddCourse = () => {
                             name='courseInstructor'
                             value={courseInstructor}
                             onChange={(e) => setCourseInstructor(e.target.value)}
-
                             maxLength="40" placeholder='max character length  is 40' className='p-2 w-1/2 bg-white text-black rounded-md border-2 border-gray-300' />
                     </span>
                     <span className='flex items-center  gap-10'>
@@ -339,7 +341,6 @@ const AddCourse = () => {
                                 />
                             </span>
 
-                            {/* Subtopics Section */}
                             <span className='text-lg font-bold bg-gray-800 p-2 text-center rounded-md'>
                                 Subtopics
                             </span>
@@ -361,7 +362,6 @@ const AddCourse = () => {
                                         />
                                     </span>
 
-                                    {/* Video Link Input */}
                                     <span className='flex gap-10'>
                                         <span className='text-lg font-bold bg-gray-800 p-2 rounded-md'>
                                             Video Link:
@@ -376,7 +376,7 @@ const AddCourse = () => {
                                         />
                                     </span>
 
-                                    {/* Article Link Input */}
+                                  
                                     <span className='flex gap-10'>
                                         <span className='text-lg font-bold bg-gray-800 p-2 rounded-md'>
                                             Article Link:
@@ -391,9 +391,7 @@ const AddCourse = () => {
                                         />
                                     </span>
                                 </span>
-                            ))}
-
-                            {/* Add / Remove Subtopic Buttons */}
+                            ))}              
                             <span className='flex gap-2 justify-center'>
                                 <span
                                     onClick={() => increaseSubtopic(topicIndex, 1)}
