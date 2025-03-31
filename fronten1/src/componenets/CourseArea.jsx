@@ -6,6 +6,7 @@ import { toast, Toaster } from 'react-hot-toast';
 
 
 
+
 const CourseArea = ({course,setCourse3}) => {
     const [Subscribed, setSubscribed] = useState(false);
     const [owned, setOwned] = useState(false);
@@ -21,7 +22,7 @@ const CourseArea = ({course,setCourse3}) => {
     useEffect(() => {
         counttopics(topics);
         handleSubscription();
-    },)
+    },[course])
     const handleSubscription = async () => {
         const token = await getToken();
         try {
@@ -41,8 +42,10 @@ const CourseArea = ({course,setCourse3}) => {
             
             if (data.status === "owned") {
                 setOwned(true);
+                setSubscribed(false);
             } else if (data.status === "enrolled") {
                 setSubscribed(true);
+                setOwned(false);
             } else {
                 setSubscribed(false);
                 setOwned(false);
@@ -102,7 +105,17 @@ const CourseArea = ({course,setCourse3}) => {
                 toast.error('Failed to update completion');
                 return;
             }
-            
+            if (course.courseCompletion[topicIndex][subtopicIndex] === 0) {
+                course.courseCompletion[topicIndex][subtopicIndex] = 1;
+
+                setComSubtopic((prev) => prev + 1);
+            } else {
+                if (course.courseCompletion[topicIndex][subtopicIndex] === 1) {
+                    course.courseCompletion[topicIndex][subtopicIndex] = 0;
+
+                    setComSubtopic((prev) => prev - 1);
+                }
+            }
         } catch (error) {
             console.error("Error updating completion:", error);
             toast.error('Something went wrong');
@@ -287,20 +300,7 @@ const CourseArea = ({course,setCourse3}) => {
                                                         style={{ width: 45, height: 45 }}>
                                                     </lord-icon></span>
                                                 <span
-                                                    onClick={() => {
-                                                        handlecompletion(index, index2);
-                                                        if (course.courseCompletion[index][index2] === 0) {
-                                                            course.courseCompletion[index][index2] = 1;
-
-                                                            setComSubtopic((prev) => prev + 1);
-                                                        } else {
-                                                            if (course.courseCompletion[index][index2] === 1) {
-                                                                course.courseCompletion[index][index2] = 0;
-
-                                                                setComSubtopic((prev) => prev - 1);
-                                                            }
-                                                        }
-                                                    }}
+                                                    onClick={() =>  handlecompletion(index, index2)}
                                                     className='h-8 w-8 rounded-md px-1 flex justify-center cursor-pointer items-center bg-white '>
 
                                                     {course.courseCompletion[index][index2] === 1 ?

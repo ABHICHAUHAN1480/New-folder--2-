@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.use("/temp", require('./routes/temprout'));
 app.use("/User", require('./routes/user'));
 app.use("/course", require('./routes/course'));
-
+app.use("/home", require('./routes/home'));
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

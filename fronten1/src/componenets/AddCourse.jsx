@@ -313,8 +313,6 @@ const AddCourse = () => {
                             <span className={`absolute w-full text-xl left-28  text-white font-bold transition-opacity duration-300 }`}>
                                 Private
                             </span>
-
-
                             <div
                                 className={`w-1/2 h-8 bg-white rounded-full  shadow-md transform transition-all duration-300 ${isPublic ? "translate-x-24" : "translate-x-0"}`} ></div>
                         </div>

@@ -8,7 +8,7 @@ import { useAuth } from '@clerk/clerk-react';
 
 
 
-const Navbar = ({ setCourse, settell, settell2 }) => {
+const Navbar = ({ setCourse, settell, settell2,setHome }) => {
     const { getToken } = useAuth();
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
@@ -23,23 +23,18 @@ const Navbar = ({ setCourse, settell, settell2 }) => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-
             });
             const data = await res.json();
             if (!res.ok) {
                 throw new Error(data.message || "Failed to get course");
-            }
-          
+            }          
             setResult(data.results);
-
         }
         const delayDebounceFn = setTimeout(() => {
             getsearch();
         }, 500);
         return () => clearTimeout(delayDebounceFn);
     }, [query])
-
-
 
     const navigateToHome = () => {
         navigate("/");
@@ -53,12 +48,15 @@ const Navbar = ({ setCourse, settell, settell2 }) => {
     const handleSearch = (e) => {
         e.preventDefault();
         setQuery(e.target.value);
-
     };
-    const openSearch = async(index)=> {
-          
+
+    const handlehome=() => {
+        setHome(true);
+        settell(false);
+        settell2(false);
+    }
+    const openSearch = async(index)=> {    
         const token = await getToken();
-         
         const res =await fetch(`${import.meta.env.VITE_BACKEND_URL}/course/completion?courseCode=${result[index].courseCode}`, {
             method: "Get",
             headers: {
@@ -156,7 +154,7 @@ const Navbar = ({ setCourse, settell, settell2 }) => {
                                        ${menuOpen ? 'block' : 'hidden'}`}>
                                 <ul className="flex flex-col">
                                    
-                                    <li className='text-white px-4 py-2 rounded-t hover:bg-gray-700 cursor-pointer' onClick={navigateToHome}>
+                                    <li className='text-white px-4 py-2 rounded-t hover:bg-gray-700 cursor-pointer' onClick={handlehome}>
                                         Home
                                     </li>
 
@@ -189,7 +187,7 @@ const Navbar = ({ setCourse, settell, settell2 }) => {
                         {/* Desktop Menu (Sign In / Sign Out) */}
                         <div className="hidden md:flex items-center space-x-4">
                             {/* Home - Visible only on desktop */}
-                            <div className='text-white text-lg font-bold px-3 py-2 rounded cursor-pointer hover:bg-gray-700' onClick={navigateToHome}>
+                            <div className='text-white text-lg font-bold px-3 py-2 rounded cursor-pointer hover:bg-gray-700' onClick={handlehome}>
                                 Home
                             </div>
                             <div className="hidden md:block text-white  rounded-full cursor-pointer  transition duration-300 ease-in-out" >
