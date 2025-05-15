@@ -168,11 +168,11 @@ const CourseArea = ({ course, setCourse3 }) => {
                 if (course.courseRevision[topicIndex][subtopicIndex] === 0) {
                     course.courseRevision[topicIndex][subtopicIndex] = 1;
 
-                    setComSubtopic((prev) => prev + 1);
+                    // setComSubtopic((prev) => prev + 1);
                 } else {
                     if (course.courseRevision[topicIndex][subtopicIndex] === 1) {
                         course.courseRevision[topicIndex][subtopicIndex] = 0;
-                        setComSubtopic((prev) => prev - 1);
+                        // setComSubtopic((prev) => prev - 1);
                     }
                 }
 
