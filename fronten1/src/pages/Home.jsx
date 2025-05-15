@@ -6,7 +6,6 @@ import CourseArea from '../componenets/CourseArea'
 import { useAuth, useUser } from '@clerk/clerk-react'
 import AddCourse from '../componenets/AddCourse'
 import Homecards from '../componenets/Homecards'
-import { set } from 'mongoose'
 const Home = () => {
     const { getToken } = useAuth();
     const [home, setHome] = useState(true);
@@ -18,7 +17,8 @@ const Home = () => {
     const [course2, setCourse2] = useState([]);
     const [openaddcourse, setopenaddcourse] = useState(false);
     const [subscribed, setSubscribed] = useState(false);
-    const [loading,setloading]=useState(false);
+    const [loading, setloading] = useState(false);
+
     useEffect(() => {
         handleAddCourse();
         enrolledcourses();
@@ -84,7 +84,6 @@ const Home = () => {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
             }
-
         });
         setloading(false);
 
@@ -93,42 +92,42 @@ const Home = () => {
 
     return (
         <div className="bg-gray-100 min-h-screen">
-             {loading && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="flex flex-col items-center gap-4">
-          <lord-icon
-            src="https://cdn.lordicon.com/dupxuoaa.json"
-            trigger="loop"
-            state="loop-transparency"
-            colors="primary:#ffffff"
-            style={{ width: 80, height: 80 }}
-          ></lord-icon>
-          <span className="text-white text-lg font-medium">Loading, please wait...</span>
-        </div>
-      </div>
-    )}
-            <Navbar setCourse={setCourse2} settell={settell} settell2={settell2} setHome={setHome}/>
+            {loading && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="flex flex-col items-center gap-4">
+                        <lord-icon
+                            src="https://cdn.lordicon.com/dupxuoaa.json"
+                            trigger="loop"
+                            state="loop-transparency"
+                            colors="primary:#ffffff"
+                            style={{ width: 80, height: 80 }}
+                        ></lord-icon>
+                        <span className="text-white text-lg font-medium">Loading, please wait...</span>
+                    </div>
+                </div>
+            )}
+            <Navbar setCourse={setCourse2} settell={settell} settell2={settell2} setHome={setHome} />
             <div className='-z-10'>
-                <Sidebar course2={course} course3={course3} setSubscribed={setSubscribed} setopenaddcourse={setopenaddcourse} settell={settell} settell2={settell2} setIndex={setIndex} />
+                <Sidebar course2={course} course3={course3} setSubscribed={setSubscribed} setopenaddcourse={setopenaddcourse} settell={settell} settell2={settell2} setHome={setHome} setIndex={setIndex} />
             </div>
 
             {
                 tell ? (
                     !tell2 ? (
                         subscribed ? (
-                            course3.length > 0 && index !== null ? ( // ✅ Check if course3 has data
-                                <div className='z-10'><CourseArea course={course3[index]} setCourse3={setCourse3} /></div>
+                            course3.length > 0 && index !== null ? ((course3.length > index ?
+                                <div className='z-10'><CourseArea course={course3[index]} setCourse3={setCourse3} /></div> : <div className='z-10'><CourseArea course={course3[index - 1]} setCourse3={setCourse3} /></div>)
                             ) : (
                                 <div className='w-3/4 p-4 bg-opacity-95 flex text-white cursor-default bg-gray-800 absolute right-0 h-[90vh] overflow-y-auto'>
                                     <div className='p-4 border-y-2 border-gray-300 text-4xl w-10/12 text-center m-auto bg-white bg-opacity-25 rounded-md font-extrabold'>No Enrolled Courses</div>
                                 </div>
                             )
                         ) : (
-                            course.length > 0 && index !== null ? ( // ✅ Check if course has data
-                                <div className='z-10'><CourseArea course={course[index]} setCourse3={setCourse3} /></div>
-                            ) : (
+                            course.length > 0 && index !== null ? ((course.length > index ?
+                                <div className='z-10'><CourseArea course={course[index]} setCourse3={setCourse} /></div> : <div className='z-10'><CourseArea course={course[index - 1]} setCourse3={setCourse} /></div>)
+                            )  : (
                                 <div className='w-3/4 p-4 bg-opacity-95 flex text-white cursor-default bg-gray-800 absolute right-0 h-[90vh] overflow-y-auto'>
-                                    <div className='p-4 border-y-2 border-gray-300 text-4xl w-10/12 text-center m-auto bg-white bg-opacity-25 rounded-md font-extrabold'>No Available Courses</div>
+                                    <div className='p-4 border-y-2 border-gray-300 text-4xl w-10/12 text-center m-auto bg-white bg-opacity-25 rounded-md font-extrabold'>No Owned  Courses</div>
                                 </div>
                             )
                         )
@@ -137,13 +136,12 @@ const Home = () => {
                     )
                 ) : (home &&
                     <div className='w-3/4 p-4 bg-opacity-95 flex text-white cursor-default bg-gray-800 absolute right-0 h-[90vh] overflow-y-auto'>
-                       
                         <Homecards setCourse={setCourse2} setHome={setHome} settell={settell} settell2={settell2} />
                     </div>
                 )
             }
 
-            {!(tell || tell2||home) &&
+            {!(tell || tell2 || home) &&
                 (openaddcourse && <AddCourse />)
             }
         </div>

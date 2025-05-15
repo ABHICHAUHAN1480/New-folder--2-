@@ -1,11 +1,9 @@
 import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import React, { useEffect, useState } from 'react'
 
-const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2, course3, setSubscribed}) => {
+const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2, course3, setSubscribed,setHome}) => {
     const [myCourse, setMyCourse] = useState(false);
     const [subCourse, setSubCourse] = useState(false);
-
-
     return (<>
         <div className="lg:w-1/4 w-full h-[90%] bg-gray-900 overflow-scroll hide-scrollbar  border-gray-300 shadow-xl p-6   absolute ">
             <h2 className="text-3xl font-bold text-gray-200 mb-6">Get Your Courses</h2>
@@ -45,7 +43,7 @@ const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2, course
                                     </li>
                                 ))}
                                 <li
-                                 onClick={()=>{setopenaddcourse(true),settell(false),settell2(false)}}
+                                 onClick={()=>{setopenaddcourse(true),settell(false),settell2(false),setHome(false)}}
                                  className=" bg-green-500 flex items-center justify-between w-11/12 mx-auto hover:scale-105 border-2 border-gray-300 cursor-pointer hover:bg-green-600 rounded-lg transition duration-150 ease-in-out">
                                     <span className='p-3'>Add new Course</span>
                                     <span className='mr-3 mt-1'><lord-icon
@@ -76,7 +74,7 @@ const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2, course
                         </div>
                         {subCourse && (
                             <ul className="w-full mt-3 flex flex-col py-4 gap-3 bg-gray-50 rounded-lg">
-                               {course3.map((course, index) => (
+                              {course3.length>0 ? (course3.map((course, index) => (
                                     <li
                                         key={index}
 
@@ -91,7 +89,7 @@ const Sidebar = ({setopenaddcourse, settell, settell2, setIndex, course2, course
                                     >
                                         {course.courseName}
                                     </li>
-                                ))}
+                                ))):<li  className="p-3 w-11/12 mx-auto bg-red-500 rounded-lg">No Subscribed Courses</li>}
                             </ul>
                         )}
                     </div></SignedIn>

@@ -6,14 +6,13 @@ const User = require("../models/User");
 router.post('/addCourse', async (req, res) => {
     const userId = req.auth.userId;
     
-    
     if (!userId) {
         return res.status(400).json({ error: 'Error: No signed-in user' });
     }
     const user = await User.findOne({ clerkId: userId });
     const {courseName, courseDescription, privacy,courseInstructor,courseCode,keywords,importantPoints,topics } = req.body;
     const courseCompletion = topics.map(topic => new Array(topic.subtopics.length).fill(0));
-
+    const courseRevision = topics.map(topic => new Array(topic.subtopics.length).fill(0));
     const course = new Course({
         courseName: courseName,
         courseDescription: courseDescription,
@@ -24,11 +23,11 @@ router.post('/addCourse', async (req, res) => {
         impPoints: importantPoints,
         topics: topics
     });
-  console.log(courseCompletion)
     course.save();
     user.owncourses.push({
         courseCode,
-        courseCompletion
+        courseCompletion,
+        courseRevision
     });
 
     await user.save();
@@ -53,14 +52,18 @@ router.get('/getCourses', async (req, res) => {
        
         const courseMap = new Map();
         user.owncourses.forEach(course => {
-            courseMap.set(course.courseCode, course.courseCompletion);
+            courseMap.set(course.courseCode, {
+                courseCompletion: course.courseCompletion,
+                courseRevision: course.courseRevision
+            });
         });
         
         const results = await Course.find({ courseCode: { $in: Array.from(courseMap.keys()) } });
 
         const coursesWithCompletion = results.map(course => ({
             ...course.toObject(),
-            courseCompletion: courseMap.get(course.courseCode) || [[]]
+            courseCompletion: courseMap.get(course.courseCode)?.courseCompletion || [[]],
+            courseRevision: courseMap.get(course.courseCode)?.courseRevision || [[]]
         }));
 
         res.json(coursesWithCompletion);

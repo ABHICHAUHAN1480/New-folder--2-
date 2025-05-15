@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { IoMdMenu } from "react-icons/io";
 import { useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
+import { set } from 'mongoose';
 
 
 
@@ -15,9 +16,10 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
     const [userprofile, setuserprofile] = useState(false)
     const [query, setQuery] = useState("");
     const [result, setResult] = useState([]);
-
+    const [loading, setloading] = useState(false);
     useEffect(() => {
         const getsearch = async () => {
+            setloading(true);
             const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/User/getCourses?search=${query}`, {
                 method: "Get",
                 headers: {
@@ -26,9 +28,11 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
             });
             const data = await res.json();
             if (!res.ok) {
+                setloading(false);
                 throw new Error(data.message || "Failed to get course");
             }          
             setResult(data.results);
+            setloading(false);
         }
         const delayDebounceFn = setTimeout(() => {
             getsearch();
@@ -36,10 +40,7 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
         return () => clearTimeout(delayDebounceFn);
     }, [query])
 
-    const navigateToHome = () => {
-        navigate("/");
-        setMenuOpen(false);
-    };
+    
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -51,11 +52,14 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
     };
 
     const handlehome=() => {
+        setloading(true);
         setHome(true);
         settell(false);
         settell2(false);
+        setloading(false);
     }
-    const openSearch = async(index)=> {    
+    const openSearch = async(index)=> { 
+        setloading(true);   
         const token = await getToken();
         const res =await fetch(`${import.meta.env.VITE_BACKEND_URL}/course/completion?courseCode=${result[index].courseCode}`, {
             method: "Get",
@@ -66,6 +70,7 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
         });
         const data = await res.json();
         if (!res.ok) {
+            setloading(false);
             throw new Error(data.message || "Failed to get course");
         } 
         if(data.msg==="found"){
@@ -74,6 +79,7 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
                 ...result[index], 
                 courseCompletion
             };
+            
             setCourse(course); 
         }else{
             const courseCompletion =result[index].topics.map(topic => new Array(topic.subtopics.length).fill(0)); const course = {
@@ -85,10 +91,25 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
         settell(true);
         settell2(true);
         setQuery("");
+        setloading(false);
     }; 
 
 
     return (<>
+      {loading && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="flex flex-col items-center gap-4">
+          <lord-icon
+            src="https://cdn.lordicon.com/dupxuoaa.json"
+            trigger="loop"
+            state="loop-transparency"
+            colors="primary:#ffffff"
+            style={{ width: 80, height: 80 }}
+          ></lord-icon>
+          <span className="text-white text-lg font-medium">Loading, please wait...</span>
+        </div>
+      </div>
+    )}
         {userprofile ?
             <div className='flex flex-col mt-4 items-center'>
                 <UserProfile />
@@ -174,23 +195,23 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
                                     </SignedOut>
 
                                     {/* Settings for Mobile */}
-                                    <li className='text-white px-4 py-2 hover:bg-gray-700 cursor-pointer'>
-                                        {/* <IoSettingsOutline className='inline-block mr-2 text-xl' /> */}
+                                    {/* <li className='text-white px-4 py-2 hover:bg-gray-700 cursor-pointer'>
+                                     
                                         Settings
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </div>
                         </div>
 
 
 
-                        {/* Desktop Menu (Sign In / Sign Out) */}
-                        <div className="hidden md:flex items-center space-x-4">
-                            {/* Home - Visible only on desktop */}
+                      
+                        <div className="hidden md:flex items-center gap-7">
+                      
                             <div className='text-white text-lg font-bold px-3 py-2 rounded cursor-pointer hover:bg-gray-700' onClick={handlehome}>
                                 Home
                             </div>
-                            <div className="hidden md:block text-white  rounded-full cursor-pointer  transition duration-300 ease-in-out" >
+                            {/* <div className="hidden md:block text-white  rounded-full cursor-pointer  transition duration-300 ease-in-out" >
 
                                 <lord-icon
                                     src="https://cdn.lordicon.com/ifsxxxte.json"
@@ -199,7 +220,7 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
                                     colors="primary:#e4e4e4"
                                     style={{ width: "35px", height: "35px" }}>
                                 </lord-icon>
-                            </div>
+                            </div> */}
 
                             <SignedIn>
                                 <UserButton />
@@ -207,7 +228,7 @@ const Navbar = ({ setCourse, settell, settell2,setHome }) => {
 
                             <SignedOut>
                                 <SignInButton>
-                                    <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Sign In</button>
+                                    <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300 w-24">Sign In</button>
                                 </SignInButton>
                             </SignedOut>
                         </div>

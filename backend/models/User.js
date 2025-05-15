@@ -10,11 +10,19 @@ const userSchema = new mongoose.Schema({
         courseCompletion: {  
             type: [[Number]],  
             default: [[0] ]  
-        }
+        },
+        courseRevision:{  
+            type: [[Number]],  
+            default: [[0] ]  
+        },
     }], 
     enrolledcourses:  [{
         courseCode: { type: String },
-        courseCompletion: { type: [[Number]], default: [[]] } 
+        courseCompletion: { type: [[Number]], default: [[]] } ,
+        courseRevision:{  
+            type: [[Number]],  
+            default: [[0] ]  
+        },
     }], 
 });
 
